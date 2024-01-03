@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Control de Motor</title>
+    
+    </head>
+
+    <style>
+
+        body {
+
+            background-color: #A7D1F8;
+
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+
+            margin: 0 auto;
+
+        }
+
+        #title {
+
+            color: rgb(14, 14, 14);
+
+            margin-top: 50px;
+            margin-bottom: 10px;
+
+        }
+
+        #subtitle {
+
+            color: rgb(59, 57, 57);
+
+            margin-top: 0;
+            margin-bottom: 10px;
+
+        }
+
+        #dutyCycleLabel {
+
+            font-size: 1.1rem;
+            font-weight: 500;
+
+        }
+
+        .slidercontainer {
+            width: 50%;
+            margin-left: 25%;
+        }
+        
+        input[type=range] {
+
+            background-color: #A7D1F8;
+            width: 100%;
+            height: 26px;
+            margin: 10px 0;
+
+            -webkit-appearance: none;
+            
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            
+            background: #50555C;
+            width: 100%;
+            height: 14px;
+            border: 0px solid #000000;
+            border-radius: 14px;
+            box-shadow: 1px 1px 1px #50555C;
+
+            cursor: pointer;
+
+            animate: 0.2s;
+  
+  
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+
+            background-color: #529DE1;
+            width: 40px;
+            height: 20px;
+            margin-top: -3px;
+            border: 0px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+  
+            -webkit-appearance: none;
+
+            cursor: pointer;
+  
+        }
+
+        input[type=range]:focus::-webkit-slider-runnable-track {
+            background-color: #50555C;
+        }
+
+        input[type=range]::-moz-range-track {
+
+            background-color: #50555C;
+            width: 100%;
+            height: 14px;
+            border: 0px solid #000000;
+            border-radius: 14px;
+            box-shadow: 1px 1px 1px #50555C;
+            
+            cursor: pointer;
+
+            animate: 0.2s;
+
+        }
+  
+        input[type=range]::-moz-range-thumb {
+
+            background-color: #529DE1;
+            width: 40px;
+            height: 20px;
+            border: 0px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+            
+            cursor: pointer;
+        
+        }
+
+        input[type=range]::-ms-track {
+
+            color: transparent;
+  
+            background: transparent;
+            width: 100%;
+            height: 14px;
+            border-color: transparent;
+
+            cursor: pointer;
+
+            animate: 0.2s;
+
+        }
+
+        input[type=range]::-ms-fill-lower {
+
+            background: #50555C;
+            border: 0px solid #000000;
+            border-radius: 28px;
+            box-shadow: 1px 1px 1px #50555C;
+
+        }
+
+        input[type=range]::-ms-fill-upper {
+            
+            background: #50555C;
+            border: 0px solid #000000;
+            border-radius: 28px;
+            box-shadow: 1px 1px 1px #50555C;
+
+        }
+
+        input[type=range]::-ms-thumb {
+
+            background-color: #529DE1;
+            width: 40px;
+            height: 20px;
+            margin-top: 1px;
+            border: 0px solid #000000;
+            border-radius: 12px;
+            box-shadow: 0px 0px 0px #000000;
+            
+            cursor: pointer;
+        
+        }
+        
+        input[type=range]:focus::-ms-fill-lower {
+            background-color: #50555C;
+        }
+
+        input[type=range]:focus::-ms-fill-upper {
+            background-color: #50555C;
+        }
+
+        button {
+
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight:600;
+
+            background-color: #252121;
+            padding: 9px;
+            border-top: 2px solid #817A78;
+            border-left: 2px solid #817A78;
+            border-radius: 5px;
+
+        }
+
+        button:hover{
+            background-color: #4D4A4A;
+        }
+
+    </style>
+
+    <body>
+
+        <header>
+            <h1 id="title">CONTROL DE MOTOR</h1>
+            <h3 id="subtitle">Barra de velocidad</h3>
+        </header>
+
+        <section>
+
+            <div class="slidercontainer" style="width: 50%; margin: auto;">
+                <input type="range" min="0" step="10" max="100" value="0" class="slider" id="myRange">
+            </div>
+
+            <p id="dutyCycleLabel">Ciclo de trabajo: <span id="value">0%</span></p>
+
+            <button onclick="shutdown()">Apagar motor</button>
+
+        </section>
+
+        <script>
+
+            var slider = document.getElementById("myRange");
+            var output = document.getElementById("value");
+
+            slider.addEventListener("input", function() {
+
+                output.innerHTML = this.value + '%';
+
+                fetch("/control_motor", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: "value=" + this.value
+                });
+
+            });
+
+            function shutdown() {
+                fetch("/shutdown", {
+                    method: "POST"
+                });
+            }
+        
+        </script>
+
+    </body>
+
+</html>
